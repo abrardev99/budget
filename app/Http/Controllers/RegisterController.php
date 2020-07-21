@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\SendVerificationMailAction;
 use App\Models\LoginAttempt;
 use Illuminate\Http\Request;
 // use App\Http\Controllers\Controller;
 
-use App\Mail\VerifyRegistration;
 use App\Repositories\CurrencyRepository;
 use App\Repositories\LoginAttemptRepository;
 use App\Repositories\SpaceRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
-use Mail;
 
 class RegisterController extends Controller
 {
@@ -48,7 +47,7 @@ class RegisterController extends Controller
         $space = $this->spaceRepository->create($request->currency, $user->name . '\'s Space');
         $user->spaces()->attach($space->id, ['role' => 'admin']);
 
-        Mail::to($user->email)->queue(new VerifyRegistration($user));
+        (new SendVerificationMailAction())->execute($user->id);
 
         Auth::loginUsingId($user->id);
 
