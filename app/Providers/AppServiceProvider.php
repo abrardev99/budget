@@ -13,6 +13,8 @@ class AppServiceProvider extends ServiceProvider
             $versionFileExists = file_exists(base_path() . '/version.txt');
             $versionNumber = $versionFileExists ? file_get_contents(base_path() . '/version.txt') : '-';
 
+            // Nothing changed
+
             $view->with([
                 'userName' => Auth::check() ? Auth::user()->name : null,
                 'currency' => Auth::check() ? session('space') ? session('space')->currency->symbol : '-' : null,
